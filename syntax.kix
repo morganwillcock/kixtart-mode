@@ -1,0 +1,71 @@
+/* ---------------------------------------
+   Script examples for syntax highlighting
+   --------------------------------------- */
+
+;;; Built in functions
+
+SetOption("NoNetwork", "ON")
+
+;;; Commands and user defined function names
+
+Function Function1 EndFunction
+Function Function:1 EndFunction
+Function F EndFunction
+
+; Trailing ? commands, Macros, and Variables are valid and become part of the
+; body of the function.
+Function Function2? EndFunction
+Function Function3@WKSTA EndFunction
+Function Function4$var EndFunction
+
+;;; Labels
+
+:!
+:#
+:%
+::
+:\
+:_
+:`
+:label
+:{
+:}
+
+; Trailing variables are not part of the label.
+:label$var
+
+;;; Macros
+
+@WKSTA
+
+; Variables are not part of the macro name.
+@WKSTA$var
+$var@WKSTA
+
+; Leading labels are not part of the macro name.
+:label@WKSTA
+
+; Any trailing syntax seems to be silently discarded if the start of the macro
+; is valid, the trailing portion can be highlighted as a warning.
+@WKSTA:label
+@WKSTAEnd
+
+; Unknown macro values will evaluate to 0 so the entire name can be highlighed
+; as a warning.
+@NOTWKSTA
+@FUNCTION
+@:label
+
+;;; Variables
+
+$
+$!
+$#
+$%
+$:
+$\
+$_
+$`
+$var
+${
+$}

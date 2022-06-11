@@ -1,0 +1,65 @@
+kixtart-mode is a major mode for editing KiXtart script files which
+implements the following features:
+
+- syntax highlighting
+- indentation
+- beginning and end of defun
+- Imenu support
+- Outline mode support
+
+Syntax highlighting is implemented for language keywords, function names,
+labels, macros, and variables.  Malformed macro names can potentially drop
+trailing syntax or always evaluate to 0, in such cases the relevant portion
+of macro names will be highlighted as a warning.
+
+Indentation will be applied by determining the number of script-blocks which
+are open around the current buffer position, where parentheses or the
+following commands are deemed to open a new or close an existing
+script-block:
+
+| Open       | Close          |
+|------------+----------------|
+| DO         | UNTIL          |
+| CASE       | CASE ENDSELECT |
+| ELSE       | ENDIF          |
+| FOR        | NEXT           |
+| FUNCTION   | ENDFUNCTION    |
+| IF         | ELSE ENDIF     |
+| SELECT     | ENDSELECT      |
+| WHILE      | LOOP           |
+
+The indentation offset applied to each subsequent script-block level is
+determined by the customizable variable `kixtart-indent-offset' combined with
+the indentation level of the line which opened the current script-block.  The
+movement function `kixtart-up-script-block' uses the same rules of
+script-block definition to move point, to the buffer position which opened
+the current script-block, based on its currently determined script-block
+level.
+
+`beginning-of-defun-function' and `end-of-defun-function' are implemented and
+should work well for function definitions which appear at the "top-level" of
+the script.  If FUNCTION commands are not positioned at the beginning of a
+line, navigation can be improved by remapping the key which would normally
+call `beginning-of-defun' to call `beginning-of-defun-raw' in its place:
+
+(add-hook 'kixtart-mode-hook
+          (lambda ()
+            (local-set-key [remap beginning-of-defun]
+                           'beginning-of-defun-raw)))
+
+`imenu' will list the names of all defined function as top level menu entries
+as well as a single "/Labels" sub-menu entry which lists all defined label
+names.
+
+`outline-mode' settings borrow some conventions from the built-in Lisp mode
+and will determine outline levels by looking for 3 or more ';' characters
+appearing at the start of a line, followed by at least 1 whitespace
+character.  ";;;" represents an outline level depth of 1.  Depth is increased
+by 1 for every additional ';' character.  FUNCTION commands which appear at
+the start of a line will define additional outline levels at the maximum
+depth.
+
+Note: Since the KiXtart language does not mandate any structured use of lines
+this presents some challenges to line based parsing.  Currently both syntax
+highlighting and Imenu entries for function names require the function name
+to be declared on the same line as the FUNCTION command.
