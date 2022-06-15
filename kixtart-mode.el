@@ -107,8 +107,7 @@
   "Specifies the indentation offset applied by `kixtart-indent-line'.
 Lines determined to be within script-blocks are indented by this
 number of columns per script-block level."
-  :type 'integer
-  :group 'kixtart)
+  :type 'integer)
 
 ;;;; Search patterns
 
