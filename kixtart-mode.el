@@ -101,7 +101,8 @@
   "Major mode for editing KiXtart files."
   :tag "KiXtart"
   :link '(emacs-commentary-link "kixtart-mode")
-  :group 'languages)
+  :group 'languages
+  :prefix "kixtart-")
 
 (defcustom kixtart-indent-offset 4
   "Specifies the indentation offset applied by `kixtart-indent-line'.
