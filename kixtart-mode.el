@@ -162,8 +162,8 @@ number of columns per script-block level."
              (seq command-function
                   (1+ whitespace)
                   (group
-                   (1+ (intersection user-chars
-                                     (not (char ?$ ?: ?@)))))))
+                   (seq (1+ (intersection user-chars (not (char ?$ ?: ?@))))
+                        (0+ user-chars)))))
             (label
              (seq symbol-start ?: (1+ user-chars)))
             (macro
