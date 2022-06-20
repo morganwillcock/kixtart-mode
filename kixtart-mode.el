@@ -159,7 +159,8 @@ number of columns per script-block level."
             (function-def
              ;; Function names cannot start with a character which wrongly
              ;; identifies the name as a label, macro, or variable.
-             (seq command-function
+             (seq (group
+                   command-function)
                   (1+ whitespace)
                   (group
                    (seq (1+ (intersection user-chars (not (char ?$ ?: ?@))))
@@ -443,11 +444,12 @@ found."
   (setq mode-name "KiXtart")
   (setq-local comment-start ";")
   (setq-local font-lock-defaults
-              `(((,(kixtart-rx macro)        2 font-lock-warning-face)
-                 (,(kixtart-rx macro)        1 font-lock-type-face)
+              `(((,(kixtart-rx macro)
+                  (1 font-lock-type-face) (2 font-lock-warning-face))
                  (,(kixtart-rx macro-format) . font-lock-warning-face)
-                 (,(kixtart-rx function-def) 1 font-lock-function-name-face)
                  (,(kixtart-rx function)     . font-lock-builtin-face)
+                 (,(kixtart-rx function-def)
+                  (1 font-lock-keyword-face) (2 font-lock-function-name-face))
                  (,(kixtart-rx command)      . font-lock-keyword-face)
                  (,(kixtart-rx label)        . font-lock-constant-face)
                  (,(kixtart-rx variable)     . font-lock-variable-name-face))
@@ -458,7 +460,7 @@ found."
   (setq-local outline-level #'kixtart-outline-level)
   (setq-local outline-regexp (kixtart-rx outline))
   (setq imenu-create-index-function 'imenu-default-create-index-function)
-  (setq imenu-generic-expression `((nil ,(kixtart-rx function-def) 1)
+  (setq imenu-generic-expression `((nil ,(kixtart-rx function-def) 2)
                                    ("/Labels" ,(kixtart-rx label) 0))))
 
 ;;;###autoload
