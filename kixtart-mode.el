@@ -353,21 +353,25 @@ found."
                  (max 0 (if paren-close (1- paren-depth) paren-depth))
                  ;; Add indentation based on matching script-block tokens.
                  (pcase `(,open-with ,line-token)
-                   ;; No script-block open.
+                   ;; Avoid further pattern matches where there is no
+                   ;; script-block open.
                    (`(nil ,_) 0)
-                   ;; A script-block open without a script-block close.
+                   ;; Always match an opening "SELECT" to allow anything
+                   ;; preceeding the first "CASE" block to align with the
+                   ;; "SELECT" block.
+                   (`(kixtart-select-t ,_) 0)
+                   ;; Avoid further pattern matches for a script-block open
+                   ;; without a script-block close.
                    (`(,_ nil) 1)
-                   ;; Matching token pairs. "CASE" tokens always match so that
-                   ;; "CASE" and "ENDSELECT" will align with their "SELECT".
-                   ((or `(,_ kixtart-case-t)
-                        '(kixtart-do-t       kixtart-until-t)
-                        '(kixtart-case-t     kixtart-endselect-t)
+                   ;; Matching token pairs.
+                   ((or '(kixtart-do-t       kixtart-until-t)
+                        `(kixtart-case-t     ,(or 'kixtart-case-t
+                                                  'kixtart-endselect-t))
                         '(kixtart-else-t     kixtart-endif-t)
                         '(kixtart-for-t      kixtart-next-t)
                         '(kixtart-function-t kixtart-endfunction-t)
                         `(kixtart-if-t       ,(or 'kixtart-else-t
                                                   'kixtart-endif-t))
-                        '(kixtart-select-t   kixtart-endselect-t)
                         '(kixtart-while-t    kixtart-loop-t))
                     0)
                    ;; Default to increasing the indentation.

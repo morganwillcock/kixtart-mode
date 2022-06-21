@@ -282,4 +282,24 @@ $var = 2
       (indent-region (point-min) (point-max))
       (should (equal (buffer-string) text)))))
 
+(ert-deftest kixtart-mode-select-block-no-indent ()
+  "Select blocks do not increase the indentation level."
+  (with-temp-buffer
+    (kixtart-mode)
+    (let ((text "Select
+;; Select comment.
+Case $maybe
+    ;; Maybe comment.
+    $var = 1
+Case $unless
+    ;; Unless comment.
+Case 1
+    ;; Default comment.
+    $var = 2
+EndSelect
+"))
+      (insert text)
+      (indent-region (point-min) (point-max))
+      (should (equal (buffer-string) text)))))
+
 ;;; kixtart-mode-tests.el ends here
